@@ -10,12 +10,12 @@
     (:import goog.History))
 
 ; all of the entities that appear in our game
-(def game-state (atom {
-                          :entities [
-                                     {:id :p0 :symbol "❤" :color 1 :pos [0 0] :angle 0}
-                                     {:id :p1 :symbol "⬠" :color 0 :pos [0 0] :angle 0}
-                                     {:id :p2 :symbol "▼" :color 0 :pos [-200 50] :angle 0}
-                                     {:id :p3 :symbol "➤" :color 1 :pos [300 200] :angle 0} 
+(def game-state (atom {:entities [{:id :p0 :symbol "❤" :color 1 :pos [0 0] :angle 0}
+                                  {:id :p1 :symbol "⬠" :color 0 :pos [0 0] :angle 0}
+                                  {:id :p2 :symbol "▼" :color 0 :pos [-200 50] :angle 0}
+                                  {:id :p3 :symbol "➤" :color 1 :pos [300 200] :angle 0} 
+                                  {:id :p4 :symbol "⚡" :color 0 :pos [50 -200] :angle 0} 
+                                  {:id :p5 :symbol "◍" :color 0 :pos [-20 300] :angle 0}]}))
 
 (def blurb "a tiny cljs game engine experiment.")
 
