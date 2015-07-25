@@ -24,17 +24,18 @@
 ;; -------------------------
 ;; Helper functions
 
-(defn re-calculate-viewport-size []
-  (def viewport-size (dom/getViewportSize (dom/getWindow))))
+(defn re-calculate-viewport-size [old-viewport-size]
+  (dom/getViewportSize (dom/getWindow)))
 
-(.addEventListener js/window "resize" re-calculate-viewport-size)
-(re-calculate-viewport-size)
+(def viewport-size (atom (re-calculate-viewport-size nil)))
+
+(.addEventListener js/window "resize" #(swap! viewport-size re-calculate-viewport-size))
 
 (defn get-time-now [] (.getTime (js/Date.)))
 
 (defn compute-position-style [e]
-  {:top (+ ((:pos e) 1) (/ (.-height viewport-size) 2))
-   :left (+ ((:pos e) 0) (/ (.-width viewport-size) 2))
+  {:top (+ ((:pos e) 1) (/ (.-height @viewport-size) 2))
+   :left (+ ((:pos e) 0) (/ (.-width @viewport-size) 2))
    :transform (str "rotate(" (:angle e) "turn)")})
 
 (defn game-loop [elapsed now]
@@ -64,7 +65,7 @@
   [:div
     [:div {:id "game-board"}
       ; DOM "scene grapher"
-      (map-indexed (fn [i e] [:div {:class (str "sprite c" (:color e)) :key (:id e) :style (compute-position-style e)} (:symbol e)]) (:entities @game-state))]
+      (doall (map-indexed (fn [i e] [:div {:class (str "sprite c" (:color e)) :key (:id e) :style (compute-position-style e)} (:symbol e)]) (:entities @game-state)))]
     ; info blurb
     [:div {:class "info c2"} "a tiny cljs game engine experiment." [:p "[ " [:a {:href "http://github.com/chr15m/tiny-cljs-game-engine"} "source code"] " ]"]]
     ; tv scan-line effect
