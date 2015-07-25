@@ -16,10 +16,12 @@
                                      {:id :p1 :symbol "⬠" :color 0 :pos [0 0] :angle 0}
                                      {:id :p2 :symbol "▼" :color 0 :pos [-200 50] :angle 0}
                                      {:id :p3 :symbol "➤" :color 1 :pos [300 200] :angle 0} 
-                                     {:id :p4 :symbol "⚡" :color 0 :pos [50 -200] :angle 0} 
-                                     {:id :p5 :symbol "◍" :color 0 :pos [-20 300] :angle 0}]}))
+
+(def blurb "a tiny cljs game engine experiment.")
 
 (enable-console-print!)
+
+(print blurb)
 
 ;; -------------------------
 ;; Helper functions
@@ -67,7 +69,7 @@
       ; DOM "scene grapher"
       (doall (map-indexed (fn [i e] [:div {:class (str "sprite c" (:color e)) :key (:id e) :style (compute-position-style e)} (:symbol e)]) (:entities @game-state)))]
     ; info blurb
-    [:div {:class "info c2"} "a tiny cljs game engine experiment." [:p "[ " [:a {:href "http://github.com/chr15m/tiny-cljs-game-engine"} "source code"] " ]"]]
+    [:div {:class "info c2"} blurb [:p "[ " [:a {:href "http://github.com/chr15m/tiny-cljs-game-engine"} "source code"] " ]"]]
     ; tv scan-line effect
     [:div {:id "overlay"}]])
 
