@@ -46,7 +46,12 @@
                                         :output-dir    "resources/public/js/out"
                                         :asset-path   "js/out"
                                         :optimizations :none
-                                        :pretty-print  true}}}}
+                                        :pretty-print  true}}
+                       :min {:source-paths ["env/prod/cljs"]
+                             :compiler {:output-to "build/js/app.js"
+                                        :main "reagent-game-test.prod"
+                                        :optimizations :advanced
+                                        :pretty-print false}}}}
 
   :profiles {:dev {:repl-options {:init-ns reagent-game-test.repl
                                   :nrepl-middleware []}
@@ -74,9 +79,7 @@
 
                    :cljsbuild {:builds {:app {:source-paths ["env/dev/cljs"]
                                               :compiler {:main "reagent-game-test.dev"
-                                                         :source-map true}}
-}
-}}
+                                                         :source-map true}}}}}
 
              :uberjar {:hooks [leiningen.cljsbuild minify-assets.plugin/hooks]
                        :env {:production true}
