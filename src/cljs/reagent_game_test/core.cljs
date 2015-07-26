@@ -5,23 +5,24 @@
               [goog.events :as events]
               [goog.dom :as dom]
               [goog.history.EventType :as EventType]
+              [cljs-uuid-utils.core :as uuid]
               [cljs.core.async :refer [chan <! timeout]])
     (:require-macros [cljs.core.async.macros :refer [go go-loop]])
     (:import goog.History))
 
 ; all of the entities that appear in our game
-(def game-state (atom {:entities [{:id :p0 :symbol "❤" :color 1 :pos [0 0] :angle 0}
-                                  {:id :p1 :symbol "⬠" :color 0 :pos [0 0] :angle 0}
-                                  {:id :p2 :symbol "▼" :color 0 :pos [-200 50] :angle 0}
-                                  {:id :p3 :symbol "➤" :color 1 :pos [300 200] :angle 0} 
-                                  {:id :p4 :symbol "⚡" :color 0 :pos [50 -200] :angle 0} 
-                                  {:id :p5 :symbol "◍" :color 0 :pos [-20 300] :angle 0}]}))
+(def game-state (atom {:entities {:p1 {:symbol "⬠" :color 0 :pos [-350 -50] :angle 0}
+                                  :p2 {:symbol "▼" :color 0 :pos [-200 50] :angle 0}
+                                  :p3 {:symbol "➤" :color 1 :pos [300 200] :angle 0} 
+                                  :p4 {:symbol "⚡" :color 0 :pos [50 -200] :angle 0}}}))
 
 (def blurb "a tiny cljs game engine experiment.")
 
 (enable-console-print!)
 
 (print blurb)
+
+(print "initial game-state: " (map #(let [[id e] %] (print id "->" e)) (:entities @game-state)))
 
 ;; -------------------------
 ;; Helper functions
@@ -40,23 +41,45 @@
    :left (+ ((:pos e) 0) (/ (.-width @viewport-size) 2))
    :transform (str "rotate(" (:angle e) "turn)")})
 
-(defn game-loop [elapsed now]
-  (swap! game-state (fn [old-game-state]
-    (-> old-game-state
-      ; here is where we update some entity properties - fully immutable!
-      (assoc-in [:entities 0 :pos 1] (* (Math.sin (/ now 500)) 100))
-      (assoc-in [:entities 0 :pos 0] (* (Math.cos (/ now 500)) 100))
-      (assoc-in [:entities 5 :pos 0] (* (Math.cos (/ now 500)) 50))
-      (assoc-in [:entities 5 :angle] (Math.cos (/ now 2000)))))))
+(defn behaviour-static [old-state elapsed now]
+  old-state)
 
-; run the game loop
-(defonce looper 
-  (go-loop [last-time (get-time-now)]
-    (<! (timeout 20))
-    (let [now (get-time-now)
-          elapsed (- now last-time)]
-      (game-loop elapsed now)
-      (recur now))))
+(defn behaviour-loop [old-state elapsed now]
+  (merge old-state {:pos [(* (Math.cos (/ now 500)) 100)
+                          (* (Math.sin (/ now 500)) 100)]}))
+
+(defn behaviour-rock [old-state elapsed now]
+  (-> old-state
+      (assoc-in [:pos 0] (* (Math.cos (/ now 500)) 50))
+      (assoc-in [:angle] (Math.cos (/ now 2000)))))
+
+; insert a single new entity record into the game state and kick off its control loop
+; entity-definition = :symbol :color :pos :angle :behaviour
+(defn make-entity [entity-definition]
+  (let [id (uuid/uuid-string (uuid/make-random-uuid))
+        entity {id (merge {:id id :chan (chan)} entity-definition)}]
+    ; swap the new entity definition into our game state
+    (swap! game-state assoc-in
+      [:entities id] (entity id))
+    ; kick off the entity's control loop
+    (go-loop [last-time (get-time-now)]
+      ; run every 20 milliseconds
+      (<! (timeout 20))
+      (let [now (get-time-now)
+            elapsed (- now last-time)]
+        ; update this entity's properties according to its behaviour function
+        (let [behaviour-fn (get-in @game-state [:entities id :behaviour])]
+          (if (not (nil? behaviour-fn))
+            (swap! game-state update-in [:entities id] behaviour-fn elapsed now)))
+        (recur now)))
+    ; return the entity we created
+    entity))
+
+; define our initial game entities
+
+(make-entity {:symbol "◎" :color 0 :pos [-300 -200] :angle 0 :behaviour behaviour-loop})
+(make-entity {:symbol "❤" :color 1 :pos [0 0] :angle 0})
+(make-entity {:symbol "◍" :color 0 :pos [-20 300] :angle 0 :behaviour behaviour-rock})
 
 ;; -------------------------
 ;; Views
@@ -65,9 +88,7 @@
   [:div
     [:div {:id "game-board"}
       ; DOM "scene grapher"
-      (doall (map-indexed
-        (fn [i e] [:div {:class (str "sprite c" (:color e)) :key (:id e) :style (compute-position-style e)} (:symbol e)])
-        (:entities @game-state)))]
+      (doall (map #(let [[id e] %] [:div {:class (str "sprite c" (:color e)) :key id :style (compute-position-style e)} (:symbol e)]) (:entities @game-state)))]
     ; info blurb
     [:div {:class "info c2"} blurb [:p "[ " [:a {:href "http://github.com/chr15m/tiny-cljs-game-engine"} "source code"] " ]"]]
     ; tv scan-line effect
