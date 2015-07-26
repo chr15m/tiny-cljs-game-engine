@@ -42,14 +42,12 @@
 
 (defn game-loop [elapsed now]
   (swap! game-state (fn [old-game-state]
-    (let [
-      n old-game-state
+    (-> old-game-state
       ; here is where we update some entity properties - fully immutable!
-      n (assoc-in n [:entities 0 :pos 1] (* (Math.sin (/ now 500)) 100))
-      n (assoc-in n [:entities 0 :pos 0] (* (Math.cos (/ now 500)) 100))
-      n (assoc-in n [:entities 5 :pos 0] (* (Math.cos (/ now 500)) 50)) 
-      n (assoc-in n [:entities 5 :angle] (Math.cos (/ now 2000)))]
-      n))))
+      (assoc-in [:entities 0 :pos 1] (* (Math.sin (/ now 500)) 100))
+      (assoc-in [:entities 0 :pos 0] (* (Math.cos (/ now 500)) 100))
+      (assoc-in [:entities 5 :pos 0] (* (Math.cos (/ now 500)) 50))
+      (assoc-in [:entities 5 :angle] (Math.cos (/ now 2000)))))))
 
 ; run the game loop
 (defonce looper 
