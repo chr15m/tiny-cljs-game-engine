@@ -1,12 +1,19 @@
-all: build/js/app.js build/index.html build/css/site.css build/css/loaders/loaders.min.css
+LDR=build/css/loaders/loaders.min.css
+CSS=build/css/site.css
+IDX=build/index.html
+APP=build/js/app.js
 
-build/css/loaders/loaders.min.css: resources/public/css/loaders/loaders.min.css
+all: $(APP) $(CSS) $(IDX) $(LDR)
+
+$(LDR): resources/public/css/loaders/loaders.min.css
 	mkdir -p build/css/loaders/
 	cp $< $@
 
-build/css/site.css: resources/public/css/site.css
+$(CSS): resources/public/css/site.css
 	cp $< $@
 
-build/js/app.js: src/**/**
+$(APP): src/**/**
 	lein cljsbuild once min
 
+clean:
+	rm $(LDR) $(CSS) $(APP)
