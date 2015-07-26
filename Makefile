@@ -13,6 +13,7 @@ $(CSS): resources/public/css/site.css
 	cp $< $@
 
 $(APP): src/**/**
+	rm -f $(APP)
 	lein cljsbuild once min
 
 clean:
