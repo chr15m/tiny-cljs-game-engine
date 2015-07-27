@@ -43,8 +43,8 @@
   old-state)
 
 (defn behaviour-loop [old-state elapsed now]
-  (merge old-state {:pos [(* (Math.cos (/ now 500)) 100)
-                          (* (Math.sin (/ now 500)) 100)]}))
+  (assoc old-state :pos [(* (Math.cos (/ now 500)) 100)
+                         (* (Math.sin (/ now 500)) 100)]))
 
 (defn behaviour-rock [old-state elapsed now]
   (-> old-state
@@ -55,7 +55,7 @@
 ; entity-definition = :symbol :color :pos :angle :behaviour
 (defn make-entity [entity-definition]
   (let [id (uuid/uuid-string (uuid/make-random-uuid))
-        entity {id (merge {:id id :chan (chan)} entity-definition)}]
+        entity {id (assoc entity-definition :id id :chan (chan))}]
     ; swap the new entity definition into our game state
     (swap! game-state assoc-in
       [:entities id] (entity id))
