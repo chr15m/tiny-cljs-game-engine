@@ -7,15 +7,19 @@
               [goog.history.EventType :as EventType]
               [cljs-uuid-utils.core :as uuid]
               [cljs.core.async :refer [chan <! timeout]])
-    (:require-macros [cljs.core.async.macros :refer [go go-loop]])
+    (:require-macros [cljs.core.async.macros :refer [go go-loop]]
+                     [reagent-game-test.utils :refer [load-text-file load-file-set]])
     (:import goog.History))
+
+(enable-console-print!)
 
 ; all of the entities that appear in our game
 (def game-state (atom {:entities {}}))
 
-(def blurb "a tiny cljs game engine experiment.")
+; load the sound effects definitions from disk at compile time
+(def sfx (apply merge (map (fn [[fname sdef]] {(first (.split fname ".")) (js->clj (.parse js/JSON sdef))}) (load-file-set "resources/sounds/" ".sfxr"))))
 
-(enable-console-print!)
+(def blurb "a tiny cljs game engine experiment.")
 
 (print blurb)
 
