@@ -11,10 +11,7 @@
     (:import goog.History))
 
 ; all of the entities that appear in our game
-(def game-state (atom {:entities {:p1 {:symbol "⬠" :color 0 :pos [-350 -50] :angle 0}
-                                  :p2 {:symbol "▼" :color 0 :pos [-200 50] :angle 0}
-                                  :p3 {:symbol "➤" :color 1 :pos [300 200] :angle 0} 
-                                  :p4 {:symbol "⚡" :color 0 :pos [50 -200] :angle 0}}}))
+(def game-state (atom {:entities {}}))
 
 (def blurb "a tiny cljs game engine experiment.")
 
@@ -76,10 +73,13 @@
     entity))
 
 ; define our initial game entities
-
 (make-entity {:symbol "◎" :color 0 :pos [-300 -200] :angle 0 :behaviour behaviour-loop})
 (make-entity {:symbol "❤" :color 1 :pos [0 0] :angle 0})
 (make-entity {:symbol "◍" :color 0 :pos [-20 300] :angle 0 :behaviour behaviour-rock})
+(make-entity {:symbol "⬠" :color 0 :pos [-350 -50] :angle 0})
+(make-entity {:symbol "▼" :color 0 :pos [-200 50] :angle 0})
+(make-entity {:symbol "➤" :color 1 :pos [300 200] :angle 0})
+(make-entity {:symbol "⚡" :color 0 :pos [50 -200] :angle 0})
 
 ;; -------------------------
 ;; Views
