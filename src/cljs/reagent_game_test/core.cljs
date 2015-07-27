@@ -33,10 +33,11 @@
 (defn get-time-now [] (.getTime (js/Date.)))
 
 ; turn a position into a CSS style declaration
-(defn compute-position-style [e]
-  {:top (+ ((:pos e) 1) (/ (.-height @viewport-size) 2))
-   :left (+ ((:pos e) 0) (/ (.-width @viewport-size) 2))
-   :transform (str "rotate(" (:angle e) "turn)")})
+(defn compute-position-style [{[x y] :pos angle :angle}]
+  (let [size @viewport-size]
+    {:top (+ y (/ (.-height size) 2))
+     :left (+ x (/ (.-width size) 2))
+     :transform (str "rotate(" angle "turn)")}))
 
 (defn behaviour-static [old-state elapsed now]
   old-state)
