@@ -19,7 +19,7 @@
 
 (print blurb)
 
-(print "initial game-state: " (map #(let [[id e] %] (print id "->" e)) (:entities @game-state)))
+(print "initial game-state: " (map (fn [[id e]] (print id "->" e)) (:entities @game-state)))
 
 ;; -------------------------
 ;; Helper functions
@@ -88,7 +88,7 @@
   [:div
     [:div {:id "game-board"}
       ; DOM "scene grapher"
-      (doall (map #(let [[id e] %] [:div {:class (str "sprite c" (:color e)) :key id :style (compute-position-style e)} (:symbol e)]) (:entities @game-state)))]
+      (doall (map (fn [[id e]] [:div {:class (str "sprite c" (:color e)) :key id :style (compute-position-style e)} (:symbol e)]) (:entities @game-state)))]
     ; info blurb
     [:div {:class "info c2"} blurb [:p "[ " [:a {:href "http://github.com/chr15m/tiny-cljs-game-engine"} "source code"] " ]"]]
     ; tv scan-line effect
