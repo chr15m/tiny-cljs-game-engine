@@ -16,5 +16,9 @@ $(APP): src/**/**
 	rm -f $(APP)
 	lein cljsbuild once min
 
+
+$(IDX): src/clj/reagent_game_test/*.clj
+	lein run -m reagent-game-test.utils/index-html > $(IDX)
+
 clean:
-	rm $(LDR) $(CSS) $(APP)
+	rm $(LDR) $(CSS) $(APP) $(IDX)

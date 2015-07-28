@@ -1,5 +1,6 @@
 (ns reagent-game-test.utils
-  (require [clojure.string :refer [split]]))
+  (require [clojure.string :refer [split]]
+           [reagent-game-test.handler :refer [home-page]]))
 
 ; slurp in a single text file at compile time
 (defmacro load-text-file [relative-uri-filename] (slurp relative-uri-filename))
@@ -11,3 +12,7 @@
   (->> (for [file (file-seq (clojure.java.io/file dir))
              :when (and (.isFile file) (.endsWith (str file) ext))]
         [(last (split (str file) #"/")) (slurp file)]) (into {})))
+
+; output the HTML as a string
+(defn index-html []
+  (print (apply str home-page)))
