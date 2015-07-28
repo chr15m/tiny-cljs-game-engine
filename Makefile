@@ -3,6 +3,7 @@ CSS=build/css/site.css
 IDX=build/index.html
 APP=build/js/app.js
 JSFXR=build/lib/jsfxr/sfxr.js build/lib/jsfxr/riffwave.js
+XTRN=externs.js
 
 all: $(APP) $(CSS) $(IDX) $(LDR) $(JSFXR)
 
@@ -13,10 +14,12 @@ $(LDR): resources/public/css/loaders/loaders.min.css
 $(CSS): resources/public/css/site.css
 	cp $< $@
 
-$(APP): src/**/**
+$(APP): src/**/** $(XTRN)
 	rm -f $(APP)
 	lein cljsbuild once min
 
+$(XTRN): src/cljs/**/**
+	lein externs > externs.js
 
 $(JSFXR): resources/public/lib/jsfxr/sfxr.js resources/public/lib/jsfxr/riffwave.js
 	git submodule init

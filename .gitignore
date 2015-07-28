@@ -13,3 +13,4 @@ pom.xml.asc
 *.log
 .*.swp
 build
+externs.js

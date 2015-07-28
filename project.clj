@@ -23,7 +23,8 @@
                  [secretary "1.2.3"]]
 
   :plugins [[lein-environ "1.0.0"]
-            [lein-asset-minifier "0.2.2"]]
+            [lein-asset-minifier "0.2.2"]
+            [lein-externs "0.1.3"]]
 
   :ring {:handler reagent-game-test.handler/app
          :uberwar-name "reagent-game-test.war"}
@@ -52,6 +53,7 @@
                              :compiler {:output-to "build/js/app.js"
                                         :main "reagent-game-test.prod"
                                         :optimizations :advanced
+                                        :externs ["externs.js"]
                                         :pretty-print false}}}}
 
   :profiles {:dev {:repl-options {:init-ns reagent-game-test.repl
