@@ -8,6 +8,6 @@
 ; https://www.refheap.com/18583
 (defmacro load-file-set
   [dir ext]
-  (apply merge (for [file (file-seq (clojure.java.io/file dir))
+  (->> (for [file (file-seq (clojure.java.io/file dir))
              :when (and (.isFile file) (.endsWith (str file) ext))]
-         {(last (split (str file) #"/")) (slurp file)})))
+        [(last (split (str file) #"/")) (slurp file)]) (into {})))

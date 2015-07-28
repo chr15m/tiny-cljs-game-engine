@@ -1,5 +1,6 @@
 (ns reagent-game-test.core
-    (:require [reagent.core :as reagent :refer [atom]]
+    (:require [reagent-game-test.sfx :as sfx]
+              [reagent.core :as reagent :refer [atom]]
               [reagent.session :as session]
               [secretary.core :as secretary :include-macros true]
               [goog.events :as events]
@@ -7,17 +8,13 @@
               [goog.history.EventType :as EventType]
               [cljs-uuid-utils.core :as uuid]
               [cljs.core.async :refer [chan <! timeout]])
-    (:require-macros [cljs.core.async.macros :refer [go go-loop]]
-                     [reagent-game-test.utils :refer [load-text-file load-file-set]])
+    (:require-macros [cljs.core.async.macros :refer [go go-loop]])
     (:import goog.History))
 
 (enable-console-print!)
 
 ; all of the entities that appear in our game
 (def game-state (atom {:entities {}}))
-
-; load the sound effects definitions from disk at compile time
-(def sfx (apply merge (map (fn [[fname sdef]] {(first (.split fname ".")) (js->clj (.parse js/JSON sdef))}) (load-file-set "resources/sounds/" ".sfxr"))))
 
 (def blurb "a tiny cljs game engine experiment.")
 
@@ -93,7 +90,7 @@
   [:div
     [:div {:id "game-board"}
       ; DOM "scene grapher"
-      (doall (map (fn [[id e]] [:div {:class (str "sprite c" (:color e)) :key id :style (compute-position-style e)} (:symbol e)]) (:entities @game-state)))]
+      (doall (map (fn [[id e]] [:div {:class (str "sprite c" (:color e)) :key id :style (compute-position-style e) :on-click (fn [ev] (sfx/play :blip))} (:symbol e)]) (:entities @game-state)))]
     ; info blurb
     [:div {:class "info c2"} blurb [:p "[ " [:a {:href "http://github.com/chr15m/tiny-cljs-game-engine"} "source code"] " ]"]]
     ; tv scan-line effect
