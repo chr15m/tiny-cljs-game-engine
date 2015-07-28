@@ -13,7 +13,6 @@
 ; turn a sfxr datastructure into an Audio element
 (defn to-audio [sdef]
   (let [a (js/Audio.)
-        ; p (js/Params.)
         s (.generate (js/SoundEffect. (clj->js sdef)))]
     (set! (.-src a) (.-dataURI s))
     a))
