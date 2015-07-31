@@ -18,10 +18,10 @@ $(APP): src/**/** $(XTRN)
 	lein cljsbuild once min
 
 $(XTRN): src/cljs/**/**
-	lein externs > externs.js
+	lein externs > $(XTRN)
 
 $(IDX): src/clj/reagent_game_test/*.clj
 	lein run -m reagent-game-test.utils/index-html > $(IDX)
 
 clean:
-	rm $(LDR) $(CSS) $(APP) $(IDX)
+	rm -rf $(LDR) $(CSS) $(APP) $(IDX) $(XTRN) build/css build/js
