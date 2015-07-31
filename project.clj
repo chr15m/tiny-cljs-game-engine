@@ -48,12 +48,16 @@
                                         :output-dir    "resources/public/js/out"
                                         :asset-path   "js/out"
                                         :optimizations :none
+                                        :foreign-libs [{:file "https://raw.githubusercontent.com/chr15m/jsfxr/master/sfxr.js" :provides ["SoundEffect"]}
+                                                       {:file "https://raw.githubusercontent.com/chr15m/jsfxr/master/riffwave.js" :provides ["RIFFWAVE"]}]
                                         :pretty-print  true}}
                        :min {:source-paths ["env/prod/cljs"]
                              :compiler {:output-to "build/js/app.js"
                                         :main "reagent-game-test.prod"
                                         :optimizations :advanced
                                         :externs ["externs.js"]
+                                        :foreign-libs [{:file "https://raw.githubusercontent.com/chr15m/jsfxr/master/sfxr.js" :provides ["SoundEffect"]}
+                                                       {:file "https://raw.githubusercontent.com/chr15m/jsfxr/master/riffwave.js" :provides ["RIFFWAVE"]}]
                                         :pretty-print false}}}}
 
   :profiles {:dev {:repl-options {:init-ns reagent-game-test.repl
@@ -82,7 +86,9 @@
 
                    :cljsbuild {:builds {:app {:source-paths ["env/dev/cljs"]
                                               :compiler {:main "reagent-game-test.dev"
-                                                         :source-map true}}}}}
+                                                         :source-map true
+                                                         :foreign-libs [{:file "https://raw.githubusercontent.com/chr15m/jsfxr/master/sfxr.js" :provides ["SoundEffect"]}
+                                                                        {:file "https://raw.githubusercontent.com/chr15m/jsfxr/master/riffwave.js" :provides ["RIFFWAVE"]}]}}}}}
 
              :uberjar {:hooks [leiningen.cljsbuild minify-assets.plugin/hooks]
                        :env {:production true}

@@ -1,4 +1,6 @@
 (ns reagent-game-test.sfx
+  (:require [SoundEffect :as SoundEffect]
+            [RIFFWAVE :as RIFFWAVE])
   (:require-macros [reagent-game-test.utils :refer [load-file-set]]))
 
 ; load the sound effects definitions from disk at compile time
