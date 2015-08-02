@@ -11,6 +11,7 @@ $(LDR): resources/public/css/loaders/loaders.min.css
 	cp $< $@
 
 $(CSS): resources/public/css/site.css
+	mkdir -p build/css
 	cp $< $@
 
 $(APP): src/**/** $(XTRN)
