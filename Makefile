@@ -14,11 +14,11 @@ $(CSS): resources/public/css/site.css
 	mkdir -p build/css
 	cp $< $@
 
-$(APP): src/**/** $(XTRN)
+$(APP): src/**/** $(XTRN) project.clj
 	rm -f $(APP)
 	lein cljsbuild once min
 
-$(XTRN): src/cljs/**/**
+$(XTRN): src/cljs/**/** project.clj
 	lein externs > $(XTRN)
 
 $(IDX): src/clj/reagent_game_test/*.clj
