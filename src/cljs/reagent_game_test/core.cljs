@@ -7,6 +7,7 @@
               [goog.dom :as dom]
               [goog.history.EventType :as EventType]
               [cljs-uuid-utils.core :as uuid]
+              [infinitelives.utils.events :as evt]
               [cljs.core.async :refer [chan <! timeout]])
     (:require-macros [cljs.core.async.macros :refer [go go-loop]])
     (:import goog.History))

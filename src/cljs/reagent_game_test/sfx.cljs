@@ -1,5 +1,5 @@
 (ns reagent-game-test.sfx
-  (:require [jsfxr] [riffwave])
+  (:require [jsfxr] [RIFFWAVE])
   (:require-macros [reagent-game-test.utils :refer [load-file-set]]))
 
 ; load the sound effects definitions from disk at compile time
@@ -14,7 +14,7 @@
 ; turn a sfxr datastructure into an Audio element
 (defn to-audio [sdef]
   (let [a (js/Audio.)
-        s (.generate (js/SoundEffect. (clj->js sdef)))]
+        s (.generate (jsfxr/SoundEffect. (clj->js sdef)))]
     (set! (.-src a) (.-dataURI s))
     a))
 
