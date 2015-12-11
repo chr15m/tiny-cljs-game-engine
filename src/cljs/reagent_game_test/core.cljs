@@ -82,12 +82,41 @@
 (make-entity {:symbol "➤" :color 1 :pos [300 200] :angle 0})
 (make-entity {:symbol "⚡" :color 0 :pos [50 -200] :angle 0})
 
+; http://carmenla.me/blog/posts/2015-06-22-reagent-live-markdown-editor.html
+(defn component-splat [content]
+  (fn []
+    [:div {:dangerouslySetInnerHTML {:__html (str content)}}]))
+
+(defn component-svg-test [w h svg-content]
+  [:svg {:width w
+         :height h
+         :id "canvas"
+         :style {:position "absolute" :top "500px" :left "60%"}
+         }
+   [:defs
+    [:filter {:id "glowfilter" :width w :height h :x (* w -0.5) :y (* h -0.5)
+              :dangerouslySetInnerHTML
+              {:__html "<feGaussianBlur in='SourceGraphic' stdDeviation='5'/>
+                       <feMerge>
+                        <feMergeNode/><feMergeNode in='SourceGraphic'/>
+                       </feMerge>"}}]]
+   svg-content])
+
+(defn component-circle-thing []
+  [component-svg-test 100 100
+    [:circle {:cx 50
+              :cy 50
+              :r 20
+              :style {:fill "#0f0"
+                      :filter "url(#glowfilter)"}}]])
+
 ;; -------------------------
 ;; Views
   
 (defn home-page []
   [:div
     [:div {:id "game-board"}
+      [component-circle-thing]
       ; DOM "scene grapher"
       (doall (map (fn [[id e]] [:div {:class (str "sprite c" (:color e)) :key id :style (compute-position-style e) :on-click (fn [ev] (sfx/play :blip))} (:symbol e)]) (:entities @game-state)))]
     ; info blurb
