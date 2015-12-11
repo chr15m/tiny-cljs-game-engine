@@ -2,12 +2,10 @@
     (:require [reagent-game-test.sfx :as sfx]
               [reagent.core :as reagent :refer [atom]]
               [reagent.session :as session]
-              [secretary.core :as secretary :include-macros true]
               [goog.events :as events]
               [goog.dom :as dom]
               [goog.history.EventType :as EventType]
               [cljs-uuid-utils.core :as uuid]
-              [infinitelives.utils.events :as evt]
               [cljs.core.async :refer [chan <! timeout]])
     (:require-macros [cljs.core.async.macros :refer [go go-loop]])
     (:import goog.History))
@@ -97,34 +95,10 @@
     ; tv scan-line effect
     [:div {:id "overlay"}]])
 
-; *** everything below is reagent boilerplate *** ;
-
-(defn current-page []
-  [:div [(session/get :current-page)]])
-
-;; -------------------------
-;; Routes
-(secretary/set-config! :prefix "#")
-
-(secretary/defroute "/" []
-  (session/put! :current-page #'home-page))
-
-;; -------------------------
-;; History
-;; must be called after routes have been defined
-(defn hook-browser-navigation! []
-  (doto (History.)
-    (events/listen
-     EventType/NAVIGATE
-     (fn [event]
-       (secretary/dispatch! (.-token event))))
-    (.setEnabled true)))
-
 ;; -------------------------
 ;; Initialize app
 (defn mount-root []
-  (reagent/render [current-page] (.getElementById js/document "app")))
+  (reagent/render [home-page] (.getElementById js/document "app")))
 
 (defn init! []
-  (hook-browser-navigation!)
   (mount-root))
