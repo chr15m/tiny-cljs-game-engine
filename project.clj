@@ -19,8 +19,7 @@
                  [hiccup "1.0.5"]
                  [environ "1.0.0"]
                  [org.clojure/clojurescript "1.7.28"]
-                 [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]
-                 [secretary "1.2.3"]]
+                 [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]]
 
   :plugins [[lein-environ "1.0.0"]
             [lein-asset-minifier "0.2.2"]
