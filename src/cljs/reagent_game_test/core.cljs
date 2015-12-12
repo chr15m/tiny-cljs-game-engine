@@ -85,6 +85,8 @@
     ; return the entity we created
     entity))
 
+(defn play-blip [ev] (sfx/play :blip))
+
 (defn component-svg [[w h] id style svg-content]
   (let [rw (* w (:extent @viewport-size))
         rh (* h (:extent @viewport-size))]
@@ -108,7 +110,7 @@
      svg-content]))
 
 ; define our initial game entities
-(make-entity {:symbol "◎" :color 0 :pos [-300 -200] :angle 0 :behaviour behaviour-loop})
+(make-entity {:symbol "◎" :color 0 :pos [-300 -200] :angle 0 :behaviour behaviour-loop :on-click play-blip})
 (make-entity {:symbol "❤" :color 1 :pos [0 0] :angle 0})
 ;(make-entity {:symbol "◍" :color 0 :pos [-20 300] :angle 0 :behaviour behaviour-rock})
 (make-entity {:symbol "⬠" :color 0 :pos [-0.350 -0.50] :angle 0})
@@ -120,6 +122,7 @@
               :size [0.3 0.3]
               :angle 0
               :behaviour behaviour-expand
+              :on-click play-blip
               :svg [:circle {:cx 0.15
                              :cy 0.15
                              :r 0.04
@@ -136,9 +139,9 @@
       (doall (map
                (fn [[id e]] (cond
                               ; render a "symbol"
-                              (:symbol e) [:div {:class (str "sprite c" (:color e)) :key id :style (compute-position-style e) :on-click (fn [ev] (sfx/play :blip))} (:symbol e)]
+                              (:symbol e) [:div {:class (str "sprite c" (:color e)) :key id :style (compute-position-style e) :on-click (:on-click e)} (:symbol e)]
                               ; render an SVG
-                              (:svg e) [:div {:key id :on-click (fn [ev] (sfx/play :blip))} [component-svg (:size e) id (compute-position-style e) (:svg e)]]))
+                              (:svg e) [:div {:key id :on-click (:on-click e)} [component-svg (:size e) id (compute-position-style e) (:svg e)]]))
                (:entities @game-state)))]
     ; info blurb
     [:div {:class "info c2"} blurb [:p "[ " [:a {:href "http://github.com/chr15m/tiny-cljs-game-engine"} "source code"] " ]"]]
