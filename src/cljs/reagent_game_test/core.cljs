@@ -73,28 +73,16 @@
     ; return the entity we created
     entity))
 
-; define our initial game entities
-(make-entity {:symbol "◎" :color 0 :pos [-300 -200] :angle 0 :behaviour behaviour-loop})
-(make-entity {:symbol "❤" :color 1 :pos [0 0] :angle 0})
-(make-entity {:symbol "◍" :color 0 :pos [-20 300] :angle 0 :behaviour behaviour-rock})
-(make-entity {:symbol "⬠" :color 0 :pos [-350 -50] :angle 0})
-(make-entity {:symbol "▼" :color 0 :pos [-200 50] :angle 0})
-(make-entity {:symbol "➤" :color 1 :pos [300 200] :angle 0})
-(make-entity {:symbol "⚡" :color 0 :pos [50 -200] :angle 0})
-
-; http://carmenla.me/blog/posts/2015-06-22-reagent-live-markdown-editor.html
-(defn component-splat [content]
-  (fn []
-    [:div {:dangerouslySetInnerHTML {:__html (str content)}}]))
-
-(defn component-svg-test [w h svg-content]
+(defn component-svg [w h id style svg-content]
   [:svg {:width w
          :height h
-         :id "canvas"
-         :style {:position "absolute" :top "500px" :left "60%"}
-         }
+         :id id
+         :key id
+         :class "sprite"
+         :style style}
    [:defs
     [:filter {:id "glowfilter" :width w :height h :x (* w -0.5) :y (* h -0.5)
+              ; http://carmenla.me/blog/posts/2015-06-22-reagent-live-markdown-editor.html
               :dangerouslySetInnerHTML
               {:__html "<feGaussianBlur in='SourceGraphic' stdDeviation='5'/>
                        <feMerge>
@@ -102,23 +90,40 @@
                        </feMerge>"}}]]
    svg-content])
 
-(defn component-circle-thing []
-  [component-svg-test 100 100
-    [:circle {:cx 50
-              :cy 50
-              :r 20
-              :style {:fill "#0f0"
-                      :filter "url(#glowfilter)"}}]])
+; define our initial game entities
+;(make-entity {:symbol "◎" :color 0 :pos [-300 -200] :angle 0 :behaviour behaviour-loop})
+(make-entity {:symbol "❤" :color 1 :pos [0 0] :angle 0})
+;(make-entity {:symbol "◍" :color 0 :pos [-20 300] :angle 0 :behaviour behaviour-rock})
+(make-entity {:symbol "⬠" :color 0 :pos [-350 -50] :angle 0})
+(make-entity {:symbol "▼" :color 0 :pos [-200 50] :angle 0})
+(make-entity {:symbol "➤" :color 1 :pos [300 200] :angle 0})
+(make-entity {:symbol "⚡" :color 0 :pos [50 -200] :angle 0})
+
+(make-entity {:pos [100 100]
+              :size [100 100]
+              :angle 0.25
+              :behaviour behaviour-expand
+              :svg [:circle {:cx 50
+                             :cy 50
+                             :r 20
+                             :style {:fill "#0f0"
+                                     :filter "url(#glowfilter)"}}]})
 
 ;; -------------------------
 ;; Views
-  
+;; Views
+
 (defn home-page []
   [:div
     [:div {:id "game-board"}
-      [component-circle-thing]
       ; DOM "scene grapher"
-      (doall (map (fn [[id e]] [:div {:class (str "sprite c" (:color e)) :key id :style (compute-position-style e) :on-click (fn [ev] (sfx/play :blip))} (:symbol e)]) (:entities @game-state)))]
+      (doall (map
+               (fn [[id e]] (cond
+                              ; render a "symbol"
+                              (:symbol e) [:div {:class (str "sprite c" (:color e)) :key id :style (compute-position-style e) :on-click (fn [ev] (sfx/play :blip))} (:symbol e)]
+                              ; render an SVG
+                              (:svg e) [:div {:key id :on-click (fn [ev] (sfx/play :blip))} [component-svg (get (:size e) 0) (get (:size e) 1) id (compute-position-style e) (:svg e)]]))
+               (:entities @game-state)))]
     ; info blurb
     [:div {:class "info c2"} blurb [:p "[ " [:a {:href "http://github.com/chr15m/tiny-cljs-game-engine"} "source code"] " ]"]]
     ; tv scan-line effect
