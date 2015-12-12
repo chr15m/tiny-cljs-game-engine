@@ -18,7 +18,8 @@
      (include-css (if (env :dev) "css/site.css" "css/site.min.css"))]
     [:body
      [:div#app
-      [:div {:class "loader-inner ball-scale"} [:div]]]
+      [:div {:class "infinitelives-spinner infinitelives-spinner-vertical-center"}]
+      [:div {:id "overlay"}]]
      (include-js "js/app.js")]]))
 
 (defroutes routes
